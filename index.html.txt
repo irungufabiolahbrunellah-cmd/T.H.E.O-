@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Theo 2.0 Adventure</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:black;
+color:white;
+text-align:center;
+margin:0;
+overflow-x:hidden;
+}
+
+header{
+font-size:32px;
+padding:20px;
+background:#020617;
+}
+
+#stars{
+position:fixed;
+width:100%;
+height:100%;
+z-index:-1;
+background:url("https://www.transparenttextures.com/patterns/stardust.png");
+animation:starsMove 40s linear infinite;
+}
+
+@keyframes starsMove{
+from{background-position:0 0;}
+to{background-position:1000px 1000px;}
+}
+
+#theo{
+font-size:90px;
+margin-top:20px;
+animation:float 3s infinite;
+}
+
+@keyframes float{
+0%{transform:translateY(0);}
+50%{transform:translateY(-10px);}
+100%{transform:translateY(0);}
+}
+
+button{
+padding:12px 22px;
+font-size:18px;
+border:none;
+border-radius:10px;
+background:#22c55e;
+color:white;
+cursor:pointer;
+margin:8px;
+}
+
+button:hover{
+background:#16a34a;
+}
+
+.section{
+margin-top:30px;
+}
+
+.friend,.planet{
+display:none;
+font-size:40px;
+margin:10px;
+}
+
+.progressBox{
+width:60%;
+margin:auto;
+background:#1e293b;
+border-radius:10px;
+}
+
+#progressBar{
+height:20px;
+width:0%;
+background:#22c55e;
+border-radius:10px;
+}
+
+canvas{
+background:#020617;
+margin-top:10px;
+border-radius:10px;
+}
+
+.reset{
+background:#ef4444;
+}
+
+.reset:hover{
+background:#dc2626;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="stars"></div>
+
+<header>🚀 Theo 2.0 Space Adventure</header>
+
+<div id="theo">🧑‍🚀</div>
+
+<h2>Collect badges and explore space!</h2>
+
+<button onclick="collectBadge()">🏆 Collect Badge</button>
+
+<p>Badges: <span id="badgeCount">0</span></p>
+
+<div class="progressBox">
+<div id="progressBar"></div>
+</div>
+
+<div class="section">
+<h3>👥 Friends</h3>
+
+<div id="friend1" class="friend">👩‍🚀 Luna joined!</div>
+<div id="friend2" class="friend">👨‍🚀 Kai joined!</div>
+<div id="friend3" class="friend">🧑‍🚀 Nova joined!</div>
+
+</div>
+
+<div class="section">
+<h3>🌌 Planets</h3>
+
+<div id="planet1" class="planet">🪐 Saturn Station unlocked</div>
+<div id="planet2" class="planet">🌍 Terra Base unlocked</div>
+<div id="planet3" class="planet">🔴 Mars Colony unlocked</div>
+
+</div>
+
+<div class="section">
+<h3>🏆 Achievements</h3>
+
+<div id="ach1">❌ First Badge</div>
+<div id="ach2">❌ Explorer (10 badges)</div>
+<div id="ach3">❌ Space Master (20 badges)</div>
+
+</div>
+
+<div class="section">
+<h3>🎮 Asteroid Mini Game</h3>
+
+<canvas id="game" width="300" height="200"></canvas>
+<br>
+<button onclick="startGame()">Start Game</button>
+
+</div>
+
+<button class="reset" onclick="resetGame()">Reset Adventure</button>
+
+<audio id="badgeSound">
+<source src="https://assets.mixkit.co/sfx/preview/mixkit-game-level-completed-2059.mp3">
+</audio>
+
+<script>
+
+let badges = localStorage.getItem("theo2Badges") || 0;
+badges = parseInt(badges);
+
+const badgeDisplay = document.getElementById("badgeCount");
+const progressBar = document.getElementById("progressBar");
+
+badgeDisplay.textContent = badges;
+
+updateProgress();
+unlockThings();
+
+function collectBadge(){
+
+badges++;
+
+localStorage.setItem("theo2Badges",badges);
+
+badgeDisplay.textContent = badges;
+
+document.getElementById("badgeSound").play();
+
+updateProgress();
+
+unlockThings();
+
+}
+
+function updateProgress(){
+
+let percent = (badges/20)*100;
+
+progressBar.style.width = percent+"%";
+
+}
+
+function unlockThings(){
+
+if(badges>=3){
+document.getElementById("friend1").style.display="block";
+}
+
+if(badges>=6){
+document.getElementById("friend2").style.display="block";
+}
+
+if(badges>=10){
+document.getElementById("friend3").style.display="block";
+}
+
+if(badges>=5){
+document.getElementById("planet1").style.display="block";
+}
+
+if(badges>=10){
+document.getElementById("planet2").style.display="block";
+}
+
+if(badges>=15){
+document.getElementById("planet3").style.display="block";
+}
+
+if(badges>=1){
+document.getElementById("ach1").textContent="✅ First Badge";
+}
+
+if(badges>=10){
+document.getElementById("ach2").textContent="✅ Explorer";
+}
+
+if(badges>=20){
+document.getElementById("ach3").textContent="✅ Space Master";
+}
+
+}
+
+function resetGame(){
+
+badges=0;
+
+localStorage.setItem("theo2Badges",badges);
+
+location.reload();
+
+}
+
+let canvas = document.getElementById("game");
+let ctx = canvas.getContext("2d");
+
+let theoX = 140;
+let asteroidX = Math.random()*280;
+let asteroidY = 0;
+
+function startGame(){
+
+setInterval(()=>{
+
+ctx.clearRect(0,0,300,200);
+
+ctx.font="30px Arial";
+ctx.fillText("🧑‍🚀",theoX,170);
+
+ctx.fillText("☄️",asteroidX,asteroidY);
+
+asteroidY +=5;
+
+if(asteroidY>200){
+asteroidY=0;
+asteroidX=Math.random()*280;
+}
+
+},50);
+
+}
+
+</script>
+
+</body>
+</html>
